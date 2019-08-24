@@ -1,14 +1,15 @@
 import { Router } from 'express';
+import UserController from './app/controllers/UserController';
+import SessionController from './app/controllers/SessionController';
 
 const routes = Router();
 
-// Rotas do Usuário
-routes.get('/user/:id', (req, res) => {});
-routes.post('/user', (req, res) => {});
-routes.put('/user', (req, res) => {});
-routes.delete('/user', (req, res) => {});
+// Rotas do Usuário);
+routes.post('/user', UserController.store);
+routes.put('/user', UserController.update);
+// routes.delete('/user', UserController.delete);
 
 // Rotas de Autenticação
-routes.post('/session', (req, res) => {});
+routes.post('/session', SessionController.store);
 
 export default routes;

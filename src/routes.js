@@ -20,6 +20,7 @@ routes.post('/session', SessionController.store);
 
 // Rotas de Meetup
 routes.post('/meetup', authMiddleware, MeetupController.store);
+routes.put('/meetup/:id', authMiddleware, MeetupController.update);
 
 // Upload de arquivo
 routes.post(

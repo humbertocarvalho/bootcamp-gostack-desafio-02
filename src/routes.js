@@ -5,6 +5,7 @@ import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 import authMiddleware from './app/middlewares/auth';
 import FileController from './app/controllers/FileController';
+import MeetupController from './app/controllers/MeetupController';
 
 const routes = Router();
 const upload = multer(multerConfig);
@@ -16,6 +17,9 @@ routes.put('/user', authMiddleware, UserController.update);
 
 // Rotas de Autenticação
 routes.post('/session', SessionController.store);
+
+// Rotas de Meetup
+routes.post('/meetup', authMiddleware, MeetupController.store);
 
 // Upload de arquivo
 routes.post(

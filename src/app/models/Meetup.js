@@ -1,6 +1,6 @@
 import { Model, Sequelize } from 'sequelize';
 
-export class Meetup extends Model {
+class Meetup extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -12,6 +12,12 @@ export class Meetup extends Model {
         sequelize,
       }
     );
+
+    return this;
+  }
+
+  static associate(models) {
+    this.belongsTo(models.User, { foreignKey: 'host_id', as: 'host' });
   }
 }
 

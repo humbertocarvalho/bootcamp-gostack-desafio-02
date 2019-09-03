@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import Meetup from '../models/Meetup';
 import Registration from '../models/Registration';
 
@@ -23,17 +24,42 @@ class RegistrationController {
         .json({ error: "Users can't register for their own events" });
     }
 
-    const registrationExists = await Registration.findAll({
+    const alreadyRegistered = await Registration.count({
       where: {
         meetup_id: meetupId,
         participant_id: req.userId,
       },
     });
 
-    if (registrationExists) {
+    if (alreadyRegistered) {
       return res
         .status(401)
         .json({ error: 'User already registered to this event.' });
+    }
+
+    const registrations = await Registration.count({
+      where: {
+        meetup_id: {
+          [Op.ne]: meetupId,
+        },
+        participant_id: req.userId,
+      },
+      include: [
+        {
+          model: Meetup,
+          as: 'meetup',
+          attributes: ['id', 'date'],
+          where: {
+            date: meetup.date,
+          },
+        },
+      ],
+    });
+
+    if (registrations) {
+      return res.status(401).json({
+        error: 'User have already registered to a event at the same date',
+      });
     }
 
     const registration = await Registration.create({

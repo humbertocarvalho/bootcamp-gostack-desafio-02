@@ -10,6 +10,8 @@ import MeetupController from './app/controllers/MeetupController';
 const routes = Router();
 const upload = multer(multerConfig);
 
+// TODO Adicionar tratativas do Yup em um middleware
+
 // Rotas do Usuário);
 routes.post('/user', UserController.store);
 routes.put('/user', authMiddleware, UserController.update);
@@ -19,6 +21,7 @@ routes.put('/user', authMiddleware, UserController.update);
 routes.post('/session', SessionController.store);
 
 // Rotas de Meetup
+routes.get('/meetup', authMiddleware, MeetupController.index);
 routes.post('/meetup', authMiddleware, MeetupController.store);
 routes.put('/meetup/:id', authMiddleware, MeetupController.update);
 

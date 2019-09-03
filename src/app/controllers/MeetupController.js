@@ -2,6 +2,17 @@ import { isBefore, parseISO } from 'date-fns';
 import Meetup from '../models/Meetup';
 
 class MeetupController {
+  async index(req, res) {
+    // TODO Adicionar para listar somente algumas propriedades
+    const meetups = await Meetup.findAll({
+      where: {
+        host_id: req.userId,
+      },
+    });
+
+    return res.json(meetups);
+  }
+
   async store(req, res) {
     const { title, description, location, date } = req.body;
 
@@ -41,7 +52,7 @@ class MeetupController {
       return res.status(401).json({ error: 'Past dates are not allowed' });
     }
 
-    // Caso o meetup já aconteceu, não pode alterar nada
+    // Caso o meetup já aconteceu, não pode alterar nad
     if (meetup.past) {
       return res.status(401).json({ error: 'Meetup already happened' });
     }

@@ -24,6 +24,7 @@ routes.post('/session', SessionController.store);
 routes.get('/meetup', authMiddleware, MeetupController.index);
 routes.post('/meetup', authMiddleware, MeetupController.store);
 routes.put('/meetup/:id', authMiddleware, MeetupController.update);
+routes.delete('/meetup/:id', authMiddleware, MeetupController.delete);
 
 // Upload de arquivo
 routes.post(

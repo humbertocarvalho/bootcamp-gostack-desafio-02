@@ -61,6 +61,25 @@ class MeetupController {
 
     return res.json(meetup);
   }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    const meetup = await Meetup.findByPk(id);
+
+    if (!meetup) {
+      return res.status(401).json({ error: `Meetup ${id} not found.` });
+    }
+
+    // Caso o meetup já aconteceu, não pode alterar nem cancelar o mesmo
+    if (meetup.past) {
+      return res.status(401).json({ error: 'Meetup already happened' });
+    }
+
+    await meetup.destroy();
+
+    return res.json({ message: `The meetup ${id} was deleted successfully` });
+  }
 }
 
 export default new MeetupController();

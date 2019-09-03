@@ -6,6 +6,7 @@ import SessionController from './app/controllers/SessionController';
 import authMiddleware from './app/middlewares/auth';
 import FileController from './app/controllers/FileController';
 import MeetupController from './app/controllers/MeetupController';
+import RegistrationController from './app/controllers/RegistrationController';
 
 const routes = Router();
 const upload = multer(multerConfig);
@@ -25,6 +26,13 @@ routes.get('/meetup', authMiddleware, MeetupController.index);
 routes.post('/meetup', authMiddleware, MeetupController.store);
 routes.put('/meetup/:id', authMiddleware, MeetupController.update);
 routes.delete('/meetup/:id', authMiddleware, MeetupController.delete);
+
+// Rotas de Registro no Meetup
+routes.post(
+  '/registration/:meetupId',
+  authMiddleware,
+  RegistrationController.store
+);
 
 // Upload de arquivo
 routes.post(

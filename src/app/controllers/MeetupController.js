@@ -1,8 +1,14 @@
+import { isBefore, parseISO } from 'date-fns';
 import Meetup from '../models/Meetup';
 
 class MeetupController {
   async store(req, res) {
     const { title, description, location, date } = req.body;
+
+    if (isBefore(parseISO(date), new Date())) {
+      return res.status(401).json({ error: 'Past dates are not allowed' });
+    }
+
     const meetup = await Meetup.create({
       title,
       description,
@@ -27,6 +33,17 @@ class MeetupController {
       return res
         .status(401)
         .json({ error: 'Only the host can edit the meeetup.' });
+    }
+
+    const { date } = req.body;
+
+    if (isBefore(parseISO(date), new Date())) {
+      return res.status(401).json({ error: 'Past dates are not allowed' });
+    }
+
+    // Caso o meetup já aconteceu, não pode alterar nada
+    if (meetup.past) {
+      return res.status(401).json({ error: 'Meetup already happened' });
     }
 
     await meetup.update(req.body);

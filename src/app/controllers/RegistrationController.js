@@ -4,7 +4,7 @@ import Registration from '../models/Registration';
 class RegistrationController {
   async store(req, res) {
     const { meetupId } = req.params;
-    console.log('meetupid', meetupId);
+
     const meetup = await Meetup.findByPk(meetupId);
 
     if (!meetup) {
@@ -21,6 +21,19 @@ class RegistrationController {
       return res
         .status(401)
         .json({ error: "Users can't register for their own events" });
+    }
+
+    const registrationExists = await Registration.findAll({
+      where: {
+        meetup_id: meetupId,
+        participant_id: req.userId,
+      },
+    });
+
+    if (registrationExists) {
+      return res
+        .status(401)
+        .json({ error: 'User already registered to this event.' });
     }
 
     const registration = await Registration.create({

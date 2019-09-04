@@ -75,7 +75,7 @@ class RegistrationController {
         {
           model: User,
           as: 'participant',
-          attributes: ['id', 'name'],
+          attributes: ['id', 'name', 'email'],
         },
         {
           model: Meetup,
@@ -85,7 +85,7 @@ class RegistrationController {
             {
               model: User,
               as: 'host',
-              attributes: ['id', 'name'],
+              attributes: ['id', 'name', 'email'],
             },
           ],
         },

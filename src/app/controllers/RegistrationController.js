@@ -1,6 +1,9 @@
 import { Op } from 'sequelize';
 import Meetup from '../models/Meetup';
 import Registration from '../models/Registration';
+import User from '../models/User';
+import Queue from '../../lib/Queue';
+import RegistrationMail from '../jobs/RegistrationMail';
 
 class RegistrationController {
   async store(req, res) {
@@ -65,6 +68,32 @@ class RegistrationController {
     const registration = await Registration.create({
       meetup_id: meetupId,
       participant_id: req.userId,
+    });
+
+    const registrationComplete = await Registration.findByPk(registration.id, {
+      include: [
+        {
+          model: User,
+          as: 'participant',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Meetup,
+          as: 'meetup',
+          attributes: ['id', 'date'],
+          include: [
+            {
+              model: User,
+              as: 'host',
+              attributes: ['id', 'name'],
+            },
+          ],
+        },
+      ],
+    });
+
+    await Queue.add(RegistrationMail.key, {
+      registration: registrationComplete,
     });
 
     return res.json(registration);

@@ -29,6 +29,7 @@ routes.put('/meetup/:id', authMiddleware, MeetupController.update);
 routes.delete('/meetup/:id', authMiddleware, MeetupController.delete);
 
 // Rotas de Registro no Meetup
+routes.get('/registration', authMiddleware, RegistrationController.index);
 routes.post(
   '/registration/:meetupId',
   authMiddleware,
@@ -36,7 +37,7 @@ routes.post(
 );
 
 // Rotas de Meetup Disponíveis
-routes.get('/meetups', AvailableMeetupController.index);
+routes.get('/meetups', authMiddleware, AvailableMeetupController.index);
 
 // Upload de arquivo
 routes.post(

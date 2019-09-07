@@ -6,6 +6,35 @@ import Queue from '../../lib/Queue';
 import RegistrationMail from '../jobs/RegistrationMail';
 
 class RegistrationController {
+  async index(req, res) {
+    let registrations = await Registration.findAll({
+      where: {
+        participant_id: req.userId,
+      },
+      attributes: ['id', 'meetup_id', 'participant_id'],
+      include: [
+        {
+          model: Meetup,
+          as: 'meetup',
+          attributes: [
+            'id',
+            'title',
+            'description',
+            'location',
+            'date',
+            'past',
+          ],
+        },
+      ],
+    });
+
+    registrations = registrations.filter(registration => {
+      return !registration.meetup.past;
+    });
+
+    return res.json(registrations);
+  }
+
   async store(req, res) {
     const { meetupId } = req.params;
 

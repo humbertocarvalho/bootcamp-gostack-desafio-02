@@ -1,5 +1,7 @@
-import { Op, startOfDay, endOfDay } from 'date-fns';
+import { startOfDay, endOfDay, parseISO } from 'date-fns';
+import { Op } from 'sequelize';
 import Meetup from '../models/Meetup';
+import User from '../models/User';
 
 class AvailableMeetupController {
   async index(req, res) {
@@ -12,13 +14,23 @@ class AvailableMeetupController {
         error: 'Invalid date',
       });
     }
+
+    const parsedDate = parseISO(date);
+
     const meetups = await Meetup.findAll({
       where: {
-        host_id: req.userId,
         date: {
-          [Op.between]: [startOfDay(date), endOfDay(date)],
+          [Op.between]: [startOfDay(parsedDate), endOfDay(parsedDate)],
         },
       },
+      attributes: ['id', 'title', 'description', 'location', 'date', 'host_id'],
+      include: [
+        {
+          model: User,
+          as: 'host',
+          attributes: ['id', 'name'],
+        },
+      ],
       limit: recordsPerPage,
       offset: (page - 1) * recordsPerPage,
     });

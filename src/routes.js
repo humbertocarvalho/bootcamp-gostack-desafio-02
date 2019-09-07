@@ -7,6 +7,7 @@ import authMiddleware from './app/middlewares/auth';
 import FileController from './app/controllers/FileController';
 import MeetupController from './app/controllers/MeetupController';
 import RegistrationController from './app/controllers/RegistrationController';
+import AvailableMeetupController from './app/controllers/AvailableMeetupController';
 
 const routes = Router();
 const upload = multer(multerConfig);
@@ -33,6 +34,9 @@ routes.post(
   authMiddleware,
   RegistrationController.store
 );
+
+// Rotas de Meetup Disponíveis
+routes.get('/meetups', AvailableMeetupController.index);
 
 // Upload de arquivo
 routes.post(

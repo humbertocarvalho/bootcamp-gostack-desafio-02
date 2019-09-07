@@ -24,6 +24,7 @@ class RegistrationController {
             'date',
             'past',
           ],
+          order: ['date'],
         },
       ],
     });

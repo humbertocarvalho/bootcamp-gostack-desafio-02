@@ -1,7 +1,14 @@
-import { isBefore, parseISO } from 'date-fns';
+import { isBefore, parseISO, parse } from 'date-fns';
 import Meetup from '../models/Meetup';
 
 class MeetupController {
+  async show(req, res) {
+    const { id } = req.params;
+    const meetup = await Meetup.findByPk(id);
+
+    return res.json(meetup);
+  }
+
   async index(req, res) {
     // TODO Adicionar para listar somente algumas propriedades
     const meetups = await Meetup.findAll({
@@ -16,7 +23,12 @@ class MeetupController {
   async store(req, res) {
     const { title, description, location, date } = req.body;
 
-    if (isBefore(parseISO(date), new Date())) {
+    console.log(parseISO(date));
+    console.log(date);
+    console.log(typeof date);
+    console.log(parse(date, 'dd/MM/yyyy - HH:mm"', date));
+
+    if (isBefore(date, new Date())) {
       return res.status(401).json({ error: 'Past dates are not allowed' });
     }
 

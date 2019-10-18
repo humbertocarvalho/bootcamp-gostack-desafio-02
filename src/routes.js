@@ -24,6 +24,7 @@ routes.post('/session', SessionController.store);
 
 // Rotas de Meetup
 routes.get('/meetup', authMiddleware, MeetupController.index);
+routes.get('/meetup/:id', authMiddleware, MeetupController.show);
 routes.post('/meetup', authMiddleware, MeetupController.store);
 routes.put('/meetup/:id', authMiddleware, MeetupController.update);
 routes.delete('/meetup/:id', authMiddleware, MeetupController.delete);

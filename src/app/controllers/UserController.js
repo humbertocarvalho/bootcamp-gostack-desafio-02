@@ -39,7 +39,7 @@ class UserController {
       password: Yup.string().matches(
         /^(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{7,30}$/
       ),
-      confirmNewPassword: Yup.string().when('password', (password, field) =>
+      confirmPassword: Yup.string().when('password', (password, field) =>
         password ? field.required().oneOf([Yup.ref('password')]) : field
       ),
     });

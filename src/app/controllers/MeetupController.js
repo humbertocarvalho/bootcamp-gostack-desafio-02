@@ -1,10 +1,17 @@
-import { isBefore, parseISO, parse } from 'date-fns';
+import { isBefore, parseISO } from 'date-fns';
 import Meetup from '../models/Meetup';
+import User from '../models/User';
+import File from '../models/File';
 
 class MeetupController {
   async show(req, res) {
     const { id } = req.params;
-    const meetup = await Meetup.findByPk(id);
+    const meetup = await Meetup.findByPk(id, {
+      include: [
+        { model: User, as: 'host', attributes: ['id', 'name', 'email'] },
+        { model: File, as: 'banner', attributes: ['id', 'path', 'url'] },
+      ],
+    });
 
     return res.json(meetup);
   }
@@ -15,6 +22,10 @@ class MeetupController {
       where: {
         host_id: req.userId,
       },
+      include: [
+        { model: User, as: 'host', attributes: ['id', 'name', 'email'] },
+        { model: File, as: 'banner', attributes: ['id', 'path', 'url'] },
+      ],
     });
 
     return res.json(meetups);

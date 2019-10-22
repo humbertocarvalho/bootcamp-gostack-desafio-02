@@ -34,7 +34,7 @@ class MeetupController {
   async store(req, res) {
     const { title, description, location, date, banner_id } = req.body;
 
-    if (isBefore(date, new Date())) {
+    if (isBefore(parseISO(date), new Date())) {
       return res.status(401).json({ error: 'Past dates are not allowed' });
     }
 

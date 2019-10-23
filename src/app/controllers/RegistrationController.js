@@ -2,6 +2,8 @@ import { Op } from 'sequelize';
 import Meetup from '../models/Meetup';
 import Registration from '../models/Registration';
 import User from '../models/User';
+import File from '../models/File';
+
 import Queue from '../../lib/Queue';
 import RegistrationMail from '../jobs/RegistrationMail';
 
@@ -25,6 +27,10 @@ class RegistrationController {
             'past',
           ],
           order: ['date'],
+          include: [
+            { model: User, as: 'host', attributes: ['id', 'name', 'email'] },
+            { model: File, as: 'banner', attributes: ['id', 'path', 'url'] },
+          ],
         },
       ],
     });
@@ -128,6 +134,8 @@ class RegistrationController {
 
     return res.json(registration);
   }
+
+  async delete(req, res) {}
 }
 
 export default new RegistrationController();

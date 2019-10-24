@@ -17,15 +17,20 @@ class MeetupController {
   }
 
   async index(req, res) {
-    // TODO Adicionar para listar somente algumas propriedades
+    const page = req.query.page || 1;
+    const amountPerPage = 10;
+
     const meetups = await Meetup.findAll({
       where: {
         host_id: req.userId,
       },
+      limit: amountPerPage,
+      offset: (page - 1) * amountPerPage,
       include: [
         { model: User, as: 'host', attributes: ['id', 'name', 'email'] },
         { model: File, as: 'banner', attributes: ['id', 'path', 'url'] },
       ],
+      order: ['date'],
     });
 
     return res.json(meetups);
@@ -35,7 +40,9 @@ class MeetupController {
     const { title, description, location, date, banner_id } = req.body;
 
     if (isBefore(parseISO(date), new Date())) {
-      return res.status(401).json({ error: 'Past dates are not allowed' });
+      return res
+        .status(401)
+        .json({ error: 'Datas passadas não são permitidas.' });
     }
 
     const meetup = await Meetup.create({
@@ -55,25 +62,29 @@ class MeetupController {
     const meetup = await Meetup.findByPk(id);
 
     if (!meetup) {
-      return res.status(401).json({ error: `Meetup ${id} not found.` });
+      return res
+        .status(401)
+        .json({ error: `Meetup ${id} não foi encontrado.` });
     }
 
     // Caso o usuário não seja o dono do Meetup, não irá permitir alterar
     if (meetup.host_id !== req.userId) {
       return res
         .status(401)
-        .json({ error: 'Only the host can edit the meeetup.' });
+        .json({ error: 'Somente o organizador do Meetup pode alterar..' });
     }
 
     const { date } = req.body;
 
     if (isBefore(parseISO(date), new Date())) {
-      return res.status(401).json({ error: 'Past dates are not allowed' });
+      return res
+        .status(401)
+        .json({ error: 'Datas passadas não são permitidas.' });
     }
 
     // Caso o meetup já aconteceu, não pode alterar nad
     if (meetup.past) {
-      return res.status(401).json({ error: 'Meetup already happened' });
+      return res.status(401).json({ error: 'Meetup já aconteceu!' });
     }
 
     await meetup.update(req.body);
@@ -87,17 +98,17 @@ class MeetupController {
     const meetup = await Meetup.findByPk(id);
 
     if (!meetup) {
-      return res.status(401).json({ error: `Meetup ${id} not found.` });
+      return res.status(401).json({ error: `Meetup ${id} não encontrado` });
     }
 
     // Caso o meetup já aconteceu, não pode alterar nem cancelar o mesmo
     if (meetup.past) {
-      return res.status(401).json({ error: 'Meetup already happened' });
+      return res.status(401).json({ error: 'Meetup já aconteceu!' });
     }
 
     await meetup.destroy();
 
-    return res.json({ message: `The meetup ${id} was deleted successfully` });
+    return res.json({ message: `O meetup ${id} foi deletado com sucesso` });
   }
 }
 

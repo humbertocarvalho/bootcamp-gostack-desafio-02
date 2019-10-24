@@ -20,7 +20,7 @@ class MeetupController {
     const page = req.query.page || 1;
     const amountPerPage = 10;
 
-    const meetups = await Meetup.findAll({
+    const meetups = await Meetup.findAndCountAll({
       where: {
         host_id: req.userId,
       },
@@ -33,7 +33,9 @@ class MeetupController {
       order: ['date'],
     });
 
-    return res.json(meetups);
+    const totalPages = Math.ceil(meetups.count / amountPerPage);
+
+    return res.json({ ...meetups, totalPages });
   }
 
   async store(req, res) {

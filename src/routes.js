@@ -37,6 +37,12 @@ routes.post(
   RegistrationController.store
 );
 
+routes.delete(
+  '/registration/:id',
+  authMiddleware,
+  RegistrationController.delete
+);
+
 // Rotas de Meetup Disponíveis
 routes.get('/meetups', authMiddleware, AvailableMeetupController.index);
 

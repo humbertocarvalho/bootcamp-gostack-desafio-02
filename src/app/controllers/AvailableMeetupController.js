@@ -15,9 +15,11 @@ class AvailableMeetupController {
       });
     }
 
+    console.log('Page', page);
+
     const parsedDate = parseISO(date);
 
-    const meetups = await Meetup.findAll({
+    const meetups = await Meetup.findAndCountAll({
       where: {
         date: {
           [Op.between]: [startOfDay(parsedDate), endOfDay(parsedDate)],
@@ -35,7 +37,9 @@ class AvailableMeetupController {
       offset: (page - 1) * recordsPerPage,
     });
 
-    return res.json(meetups);
+    const totalPages = Math.ceil(meetups.count / recordsPerPage);
+
+    return res.json({ ...meetups, totalPages });
   }
 }
 

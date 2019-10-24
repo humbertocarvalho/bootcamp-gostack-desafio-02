@@ -15,8 +15,6 @@ class AvailableMeetupController {
       });
     }
 
-    console.log('Page', page);
-
     const parsedDate = parseISO(date);
 
     const meetups = await Meetup.findAndCountAll({

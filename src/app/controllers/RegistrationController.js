@@ -53,14 +53,14 @@ class RegistrationController {
 
     // Caso o meetup já aconteceu, não pode alterar nem cancelar o mesmo
     if (meetup.past) {
-      return res.status(401).json({ error: 'Meetup already happened' });
+      return res.status(401).json({ error: 'Meetup já aconteceu' });
     }
 
     // Quem está hosteando o evento não pode se inscrever
     if (meetup.host_id === req.userId) {
-      return res
-        .status(401)
-        .json({ error: "Users can't register for their own events" });
+      return res.status(401).json({
+        error: 'Usuários não podem se registrar para meetups que organizam!',
+      });
     }
 
     const alreadyRegistered = await Registration.count({
@@ -73,9 +73,10 @@ class RegistrationController {
     if (alreadyRegistered) {
       return res
         .status(401)
-        .json({ error: 'User already registered to this event.' });
+        .json({ error: 'Usuário já registrado para esse meetup.' });
     }
 
+    // Return if user have been already register to a meetup, that is happening in the same time
     const registrations = await Registration.count({
       where: {
         meetup_id: {
@@ -97,7 +98,7 @@ class RegistrationController {
 
     if (registrations) {
       return res.status(401).json({
-        error: 'User have already registered to a event at the same date',
+        error: 'Usuário já registrado em um evento ',
       });
     }
 

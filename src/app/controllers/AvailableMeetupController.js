@@ -1,6 +1,7 @@
 import { startOfDay, endOfDay, parseISO } from 'date-fns';
 import { Op } from 'sequelize';
 import Meetup from '../models/Meetup';
+import File from '../models/File';
 import User from '../models/User';
 
 class AvailableMeetupController {
@@ -30,6 +31,7 @@ class AvailableMeetupController {
           as: 'host',
           attributes: ['id', 'name'],
         },
+        { model: File, as: 'banner', attributes: ['id', 'path', 'url'] },
       ],
       limit: recordsPerPage,
       offset: (page - 1) * recordsPerPage,

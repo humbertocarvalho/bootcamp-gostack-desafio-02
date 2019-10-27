@@ -1,4 +1,5 @@
 import { isBefore, parseISO } from 'date-fns';
+import * as Yup from 'yup';
 import Meetup from '../models/Meetup';
 import User from '../models/User';
 import File from '../models/File';
@@ -39,6 +40,18 @@ class MeetupController {
   }
 
   async store(req, res) {
+    const schema = Yup.object().shape({
+      title: Yup.string().required(),
+      description: Yup.string().required(),
+      location: Yup.string().required(),
+      date: Yup.date().required(),
+      banner_id: Yup.number().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Verifique os campos enviados!' });
+    }
+
     const { title, description, location, date, banner_id } = req.body;
 
     if (isBefore(parseISO(date), new Date())) {
@@ -59,6 +72,17 @@ class MeetupController {
   }
 
   async update(req, res) {
+    const schema = Yup.object().shape({
+      title: Yup.string(),
+      description: Yup.string(),
+      location: Yup.string(),
+      date: Yup.date(),
+      banner_id: Yup.number(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Verifique os campos enviados!' });
+    }
     const { id } = req.params;
 
     const meetup = await Meetup.findByPk(id);

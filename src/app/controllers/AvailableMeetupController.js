@@ -12,7 +12,7 @@ class AvailableMeetupController {
 
     if (!date) {
       return res.status(400).json({
-        error: 'Invalid date',
+        error: 'Data inválida',
       });
     }
 

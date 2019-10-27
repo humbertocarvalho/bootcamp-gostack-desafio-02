@@ -48,7 +48,9 @@ class RegistrationController {
     const meetup = await Meetup.findByPk(meetupId);
 
     if (!meetup) {
-      return res.status(401).json({ error: `Meetup ${meetupId} not found.` });
+      return res
+        .status(401)
+        .json({ error: `Meetup ${meetupId} não encontrado.` });
     }
 
     // Caso o meetup já aconteceu, não pode alterar nem cancelar o mesmo

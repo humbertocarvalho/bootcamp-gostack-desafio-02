@@ -17,13 +17,13 @@ class UserController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Verifique os campos enviados!' });
     }
 
     const userExists = await User.findOne({ where: { email: req.body.email } });
 
     if (userExists) {
-      return res.status(400).json({ error: 'Email already exists' });
+      return res.status(400).json({ error: 'E-mail já cadastrado' });
     }
 
     const { id, name, email } = await User.create(req.body);
@@ -45,7 +45,7 @@ class UserController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Verifique os campos enviados!' });
     }
 
     const { email, oldPassword } = req.body;
@@ -58,21 +58,19 @@ class UserController {
       });
 
       if (userExists) {
-        return res.status(400).json({
-          error: 'Email already exists',
-        });
+        return res.status(400).json({ error: 'E-mail já cadastrado' });
       }
     }
 
     if (!oldPassword && req.body.password) {
       return res.status(400).json({
-        error: 'oldPassword cannot be null',
+        error: 'A senha antiga não foi informada.',
       });
     }
 
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
       return res.status(400).json({
-        error: 'Password doesnt match',
+        error: 'As senhas não batem',
       });
     }
 

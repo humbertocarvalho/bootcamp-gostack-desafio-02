@@ -4,15 +4,10 @@ import File from '../models/File';
 
 class OrganizedMeetup {
   async index(req, res) {
-    const page = req.query.page || 1;
-    const amountPerPage = 10;
-
-    const meetups = await Meetup.findAndCountAll({
+    const meetups = await Meetup.findAll({
       where: {
         host_id: req.userId,
       },
-      limit: amountPerPage,
-      offset: (page - 1) * amountPerPage,
       include: [
         { model: User, as: 'host', attributes: ['id', 'name', 'email'] },
         { model: File, as: 'banner', attributes: ['id', 'path', 'url'] },
@@ -20,9 +15,7 @@ class OrganizedMeetup {
       order: ['date'],
     });
 
-    const totalPages = Math.ceil(meetups.count / amountPerPage);
-
-    return res.json({ ...meetups, totalPages });
+    return res.json(meetups);
   }
 }
 

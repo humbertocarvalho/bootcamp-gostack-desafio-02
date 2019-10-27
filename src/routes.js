@@ -8,6 +8,7 @@ import FileController from './app/controllers/FileController';
 import MeetupController from './app/controllers/MeetupController';
 import RegistrationController from './app/controllers/RegistrationController';
 import AvailableMeetupController from './app/controllers/AvailableMeetupController';
+import OrganizedMeetupController from './app/controllers/OrganizedMeetupController';
 
 const routes = Router();
 const upload = multer(multerConfig);
@@ -45,6 +46,9 @@ routes.delete(
 
 // Rotas de Meetup Disponíveis
 routes.get('/meetups', authMiddleware, AvailableMeetupController.index);
+
+// Rotas de Meetup que o usuário está organizando
+routes.get('/organized', authMiddleware, OrganizedMeetupController.index);
 
 // Upload de arquivo
 routes.post(

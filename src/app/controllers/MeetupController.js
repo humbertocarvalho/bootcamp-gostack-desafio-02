@@ -22,9 +22,6 @@ class MeetupController {
     const amountPerPage = 10;
 
     const meetups = await Meetup.findAndCountAll({
-      where: {
-        host_id: req.userId,
-      },
       limit: amountPerPage,
       offset: (page - 1) * amountPerPage,
       include: [
